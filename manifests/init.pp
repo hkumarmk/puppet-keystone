@@ -109,6 +109,7 @@ class keystone(
   user { 'keystone':
     ensure  => 'present',
     gid     => 'keystone',
+    groups  => ['openstack'],
     system  => true,
     require => Package['keystone'],
   }
