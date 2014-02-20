@@ -1,14 +1,14 @@
 # Define a radosgw
 #
 class keystone::radosgw (
-  $keystone_accepted_roles  = 'Member, admin, swiftoperator',
+  $keystone_accepted_roles  = ['Member', 'admin', 'swiftoperator'],
   $region            = 'RegionOne',
   $public_protocol   = 'http',
   $public_address    = '127.0.0.1',
   $public_port       = undef,
-  $admin_protocol    = 'http',
+  $admin_protocol    = undef,
   $admin_address     = undef,
-  $internal_protocol = 'http',
+  $internal_protocol = undef,
   $internal_address  = undef,
   $auth_name	= 'swift',
   $port		= 80,
@@ -19,6 +19,19 @@ class keystone::radosgw (
   } else {
     $real_public_port = $public_port
   }
+
+  if ! $admin_protocol {
+    $real_admin_protocol = $public_protocol
+  } else {
+    $real_admin_protocol = $admin_protocol
+  }
+
+ if ! $internal_protocol {
+    $real_internal_protocol = $public_protocol
+  } else {
+    $real_internal_protocol = $internal_protocol
+  } 
+ 
   if ! $admin_address {
     $real_admin_address = $public_address
   } else {
@@ -39,8 +52,8 @@ class keystone::radosgw (
   keystone_endpoint { "${region}/${auth_name}":
     ensure       => present,
     public_url   => "${public_protocol}://${public_address}:${real_public_port}/",
-    admin_url    => "${admin_protocol}://${real_admin_address}:${port}/",
-    internal_url => "${internal_protocol}://${real_internal_address}:${port}/",
+    admin_url    => "${real_admin_protocol}://${real_admin_address}:${port}/",
+    internal_url => "${real_internal_protocol}://${real_internal_address}:${port}/",
   }
 
   if $keystone_accepted_roles {
