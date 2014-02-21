@@ -47,13 +47,13 @@ class keystone::endpoint(
   }
 
   if $public_url {
-    $public_url_real = "${public_url}/${version}"
+    $public_url_real = "${public_url}"
   } else {
     $public_url_real = "${public_protocol}://${public_address}:${public_port}/${version}"
   }
 
   if $internal_url {
-    $internal_url_real = "${internal_url}/${version}"
+    $internal_url_real = "${internal_url}"
   } else {
     if $public_url {
       $internal_url_real = $public_url_real
@@ -63,7 +63,7 @@ class keystone::endpoint(
   }
 
   if $admin_url {
-    $admin_url_real = "${admin_url}/${version}"
+    $admin_url_real = "${admin_url}"
   } else {
     $admin_url_real = "http://${admin_address}:${admin_port}/${version}"
   }
