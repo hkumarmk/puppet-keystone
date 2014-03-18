@@ -77,6 +77,11 @@ class keystone(
   $enabled          = true,
   $sql_connection   = 'sqlite:////var/lib/keystone/keystone.db',
   $idle_timeout     = '200'
+  $keystone_cache_enabled       = false,
+  $keystone_cache_config_prefix = 'cache.keystone',
+  $keystone_cache_expiration_time       = 600,
+  $keystone_cache_backend       = undef,
+  $keystone_cache_backend_argument      = undef,
 ) {
 
   validate_re($catalog_type,   'template|sql')
@@ -148,6 +153,17 @@ class keystone(
 
   } else {
     fail("Invalid db connection ${sql_connection}")
+  }
+
+ ## Keystone cache configuration
+  if $keystone_cache_enabled {
+    keystone_config {
+	'cache/enabled': value => 'True';
+	'cache/config_prefix': value => $keystone_cache_config_prefix;
+        'cache/expiration_time': value => $keystone_cache_expiration_time;
+        'cache/cache_backend': value => $keystone_cache_backend;
+	'cache/backend_argument': value => $keystone_cache_backend_argument;	
+    }	
   }
 
   # memcache connection config
