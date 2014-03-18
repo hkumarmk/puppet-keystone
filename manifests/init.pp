@@ -76,7 +76,7 @@ class keystone(
   $memcache_servers = false,
   $enabled          = true,
   $sql_connection   = 'sqlite:////var/lib/keystone/keystone.db',
-  $idle_timeout     = '200'
+  $idle_timeout     = '200',
   $keystone_cache_enabled       = false,
   $keystone_cache_config_prefix = 'cache.keystone',
   $keystone_cache_expiration_time       = 600,
