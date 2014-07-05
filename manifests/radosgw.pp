@@ -52,8 +52,8 @@ class keystone::radosgw (
   keystone_endpoint { "${region}/${auth_name}":
     ensure       => present,
     public_url   => "${public_protocol}://${public_address}:${real_public_port}",
-    admin_url    => "${real_admin_protocol}://${real_admin_address}:${port}",
-    internal_url => "${real_internal_protocol}://${real_internal_address}:${port}",
+    admin_url    => "${real_admin_protocol}://${real_admin_address}:${real_public_port}",
+    internal_url => "${real_internal_protocol}://${real_internal_address}:${real_public_port}",
   }
 
   if $keystone_accepted_roles {
