@@ -93,7 +93,8 @@ class keystone::wsgi::apache (
   $ssl_ca        = undef,
   $ssl_crl_path  = undef,
   $ssl_crl       = undef,
-  $ssl_certs_dir = undef
+  $ssl_certs_dir = undef,
+  $keystone_wsgi_script_source = undef,
 ) {
 
   include keystone::params
@@ -119,6 +120,12 @@ class keystone::wsgi::apache (
   # Ensure there's no trailing '/' except if this is also the only character
   $admin_path_real = regsubst($admin_path, '(^/.*)/$', '\1')
 
+  if $keystone_wsgi_script_source {
+    $keystone_wsgi_script_source_real = $keystone_wsgi_script_source
+  } else {
+    $keystone_wsgi_script_source_real = $::keystone::params::keystone_wsgi_script_source
+  }
+
   if $public_port == $admin_port and $public_path_real == $admin_path_real {
     fail('When using the same port for public & private endpoints, public_path and admin_path should be different.')
   }
@@ -133,7 +140,7 @@ class keystone::wsgi::apache (
   file { 'keystone_wsgi_admin':
     ensure  => file,
     path    => "${::keystone::params::keystone_wsgi_script_path}/admin",
-    source  => $::keystone::params::keystone_wsgi_script_source,
+    source  => $keystone_wsgi_script_source_real,
     owner   => 'keystone',
     group   => 'keystone',
     mode    => '0644',
@@ -143,7 +150,7 @@ class keystone::wsgi::apache (
   file { 'keystone_wsgi_main':
     ensure  => file,
     path    => "${::keystone::params::keystone_wsgi_script_path}/main",
-    source  => $::keystone::params::keystone_wsgi_script_source,
+    source  => $keystone_wsgi_script_source_real,
     owner   => 'keystone',
     group   => 'keystone',
     mode    => '0644',
