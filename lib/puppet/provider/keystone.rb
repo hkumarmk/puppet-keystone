@@ -20,6 +20,16 @@ class Puppet::Provider::Keystone < Puppet::Provider
 
   def self.get_admin_endpoint
     admin_endpoint = keystone_file['DEFAULT']['admin_endpoint'] ? keystone_file['DEFAULT']['admin_endpoint'].strip : nil
+
+    ##
+    # admin_endpoint is configured only the protocol hostname/ip and port (in
+    # the format http://keystone.example.org:5000 and not mention the version.
+    # So adding the version if not there.
+    ##
+
+    if admin_endpoint && ! /(\/v2.0|\/v3)\/*$/.match(admin_endpoint)
+      admin_endpoint << '/v2.0'
+    end
     return admin_endpoint if admin_endpoint
 
     admin_port = keystone_file['DEFAULT']['admin_port'] ? keystone_file['DEFAULT']['admin_port'].strip : '35357'

@@ -94,6 +94,12 @@ describe Puppet::Provider::Keystone do
       klass.get_admin_endpoint.should == 'https://keystone.example.com/v2.0/'
     end
 
+    it 'should use the defined admin_endpoint and append version string if not available' do
+      mock = {'DEFAULT' => {'admin_endpoint' => 'https://keystone.example.com' }, 'ssl' => {'enable' => 'False'}}
+      Puppet::Util::IniConfig::File.expects(:new).returns(mock)
+      mock.expects(:read).with('/etc/keystone/keystone.conf')
+      klass.get_admin_endpoint.should == 'https://keystone.example.com/v2.0/'
+    end
     describe 'when testing keystone connection retries' do
 
       ['(HTTP 400)',
